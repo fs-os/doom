@@ -1,67 +1,87 @@
-# doomgeneric
-The purpose of doomgeneric is to make porting Doom easier.
-Of course Doom is already portable but with doomgeneric it is possible with just a few functions.
+# Doom port
+**Doom fork for the Free and Simple Operating System**
 
-To try it you will need a WAD file (game data). If you don't own the game, shareware version is freely available (doom1.wad).
+Forked from: [ozkl/doomgeneric](https://github.com/ozkl/doomgeneric), which is
+forked from [maximevince/fbDOOM](https://github.com/maximevince/fbDOOM), which
+is forked from [insane-adding-machines/DOOM](https://github.com/insane-adding-machines/DOOM)
+which is finally forked from [id-Software/DOOM](https://github.com/id-Software/DOOM).
 
-# porting
-Create a file named doomgeneric_yourplatform.c and just implement these functions to suit your platform.
-* DG_Init
-* DG_DrawFrame
-* DG_SleepMs
-* DG_GetTicksMs
-* DG_GetKey
+# Original readme
 
-|Functions            |Description|
-|---------------------|-----------|
-|DG_Init              |Initialize your platfrom (create window, framebuffer, etc...).
-|DG_DrawFrame         |Frame is ready in DG_ScreenBuffer. Copy it to your platform's screen.
-|DG_SleepMs           |Sleep in milliseconds.
-|DG_GetTicksMs        |The ticks passed since launch in milliseconds.
-|DG_GetKey            |Provide keyboard events.
-|DG_SetWindowTitle    |Not required. This is for setting the window title as Doom sets this from WAD file.
+Here it is, at long last.  The DOOM source code is released for your
+non-profit use.  You still need real DOOM data to work with this code.
+If you don't actually own a real copy of one of the DOOMs, you should
+still be able to find them at software stores.
 
-### main loop
-At start, call doomgeneric_Create().
+Many thanks to Bernd Kreimeier for taking the time to clean up the
+project and make sure that it actually works.  Projects tends to rot if
+you leave it alone for a few years, and it takes effort for someone to
+deal with it again.
 
-In a loop, call doomgeneric_Tick().
+The bad news:  this code only compiles and runs on linux.  We couldn't
+release the dos code because of a copyrighted sound library we used
+(wow, was that a mistake -- I write my own sound code now), and I
+honestly don't even know what happened to the port that microsoft did
+to windows.
 
-In simplest form:
-```
-int main(int argc, char **argv)
-{
-    doomgeneric_Create(argc, argv);
+Still, the code is quite portable, and it should be straightforward to
+bring it up on just about any platform.
 
-    while (1)
-    {
-        doomgeneric_Tick();
-    }
-    
-    return 0;
-}
-```
+I wrote this code a long, long time ago, and there are plenty of things
+that seem downright silly in retrospect (using polar coordinates for
+clipping comes to mind), but overall it should still be a usefull base
+to experiment and build on.
 
-# sound
-Sound is much harder to implement! If you need sound, take a look at SDL port. It fully supports sound and music! Where to start? Define FEATURE_SOUND, assign DG_sound_module and DG_music_module.
+The basic rendering concept -- horizontal and vertical lines of constant
+Z with fixed light shading per band was dead-on, but the implementation
+could be improved dramatically from the original code if it were
+revisited.  The way the rendering proceded from walls to floors to
+sprites could be collapsed into a single front-to-back walk of the bsp
+tree to collect information, then draw all the contents of a subsector
+on the way back up the tree.  It requires treating floors and ceilings
+as polygons, rather than just the gaps between walls, and it requires
+clipping sprite billboards into subsector fragments, but it would be
+The Right Thing.
 
-# platforms
-Ported platforms include Windows, X11, SDL, emscripten. Just look at (doomgeneric_win.c, doomgeneric_xlib.c, doomgeneric_sdl.c).
-Makefiles provided for each platform.
+The movement and line of sight checking against the lines is one of the
+bigger misses that I look back on.  It is messy code that had some
+failure cases, and there was a vastly simpler (and faster) solution
+sitting in front of my face.  I used the BSP tree for rendering things,
+but I didn't realize at the time that it could also be used for
+environment testing.  Replacing the line of sight test with a bsp line
+clip would be pretty easy.  Sweeping volumes for movement gets a bit
+tougher, and touches on many of the challenges faced in quake / quake2
+with edge bevels on polyhedrons.
 
-## emscripten
-You can try it directly here:
-https://ozkl.github.io/doomgeneric/
+Some project ideas:
 
-emscripten port is based on SDL port, so it supports sound and music! For music, timidity backend is used.
+Port it to your favorite operating system.
 
-## Windows
-![Windows](screenshots/windows.png)
+Add some rendering features -- transparency, look up / down, slopes,
+etc.
 
-## X11 - Ubuntu
-![Ubuntu](screenshots/ubuntu.png)
+Add some game features -- weapons, jumping, ducking, flying, etc.
 
-## X11 - FreeBSD
-![FreeBSD](screenshots/freebsd.png)
+Create a packet server based internet game.
 
-## SDL
-![SDL](screenshots/sdl.png)
+Create a client / server based internet game.
+
+Do a 3D accelerated version.  On modern hardware (fast pentium + 3DFX)
+you probably wouldn't even need to be clever -- you could just draw the
+entire level and get reasonable speed.  With a touch of effort, it should
+easily lock at 60 fps (well, there are some issues with DOOM's 35 hz
+timebase...).  The biggest issues would probably be the non-power of two
+texture sizes and the walls composed of multiple textures.
+
+
+I don't have a real good guess at how many people are going to be
+playing with this, but if significant projects are undertaken, it would
+be cool to see a level of community cooperation.  I know that most early
+projects are going to be rough hacks done in isolation, but I would be
+very pleased to see a coordinated 'net release of an improved, backwards
+compatable version of DOOM on multiple platforms next year.
+
+Have fun.
+
+John Carmack
+12-23-97
