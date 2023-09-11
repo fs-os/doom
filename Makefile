@@ -5,8 +5,8 @@ LDFLAGS+=-Wl,--gc-sections
 LIBS+=-lm -lc -lX11
 
 OBJ_DIR=obj
-SRC_DIR=.
-OUTPUT=doomgeneric
+SRC_DIR=doom
+OUTPUT=doom.out
 
 # fs-os port
 DOOMGENERIC=doomgeneric_fsos.o
