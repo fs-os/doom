@@ -47,7 +47,7 @@ void DG_SleepMs(uint32_t ms) {
 
 uint32_t DG_GetTicksMs() {
     /* PIT is configured to tick at 1000Hz, once each ms */
-    return pit_get_ticks() - start_ticks;
+    return pit_get_ticks() - start_tick;
 }
 
 int DG_GetKey(int* pressed, unsigned char* key) {
