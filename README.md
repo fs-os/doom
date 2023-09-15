@@ -6,6 +6,10 @@ forked from [maximevince/fbDOOM](https://github.com/maximevince/fbDOOM), which
 is forked from [insane-adding-machines/DOOM](https://github.com/insane-adding-machines/DOOM)
 which is finally forked from [id-Software/DOOM](https://github.com/id-Software/DOOM).
 
+# TODO
+Stuff that needs to be added to fs-os:
+- [fcntl.h](https://pubs.opengroup.org/onlinepubs/000095399/basedefs/fcntl.h.html)
+
 # Original readme
 
 Here it is, at long last.  The DOOM source code is released for your
