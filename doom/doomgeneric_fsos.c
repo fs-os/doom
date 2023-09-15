@@ -61,7 +61,7 @@ void DG_SetWindowTitle(const char* title) {
 
 /*-----------------------------------------------------------------------------*/
 
-int main(int argc, char** argv) {
+int main_doom(int argc, char** argv) {
     /* Used for DG_GetTicksMs */
     start_tick = pit_get_ticks();
 
